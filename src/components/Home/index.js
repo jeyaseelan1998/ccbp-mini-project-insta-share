@@ -26,6 +26,11 @@ const Home = () => {
   })
 
   const getUserStoriesData = async () => {
+    setUserStoriesResponse(prevState => ({
+      ...prevState,
+      apiStatus: apiStatusConstants.inProgress,
+    }))
+
     const jwtToken = Cookies.get('jwt_token')
     const userStoriesApiUrl = 'https://apis.ccbp.in/insta-share/stories'
     const options = {
@@ -76,6 +81,11 @@ const Home = () => {
     }))
 
   const getUserPostsData = async () => {
+    setPostsResponse(prevState => ({
+      ...prevState,
+      apiStatus: apiStatusConstants.inProgress,
+    }))
+
     const jwtToken = Cookies.get('jwt_token')
     const userPostsApiUrl = 'https://apis.ccbp.in/insta-share/posts'
     const options = {
@@ -105,6 +115,7 @@ const Home = () => {
 
   useEffect(() => {
     getUserPostsData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const IncreaseLikeCount = postId => {
@@ -173,17 +184,55 @@ const Home = () => {
     const {apiStatus} = postsResponse
 
     switch (apiStatus) {
-      // case apiStatusConstants.successfull:
-      //   return renderPostApiFailureView()
+      case apiStatusConstants.failure:
+        return renderPostApiFailureView()
 
-      // case apiStatusConstants.successfull:
-      //   return renderPostItems()
+      case apiStatusConstants.successfull:
+        return renderPostItems()
 
       case apiStatusConstants.inProgress:
         return renderLoadingView()
 
       default:
-        return renderPostApiFailureView()
+        return null
+    }
+  }
+
+  const renderUserStoryApiFailureView = () => (
+    <div className="failure-view-container">
+      <img
+        className="failure-view-image sm"
+        src="https://res.cloudinary.com/dktwlx0dz/image/upload/v1692360691/ccbp-mini-project-insta-share/alert-triangle_elxwl5.png"
+        alt="failure view"
+      />
+      <p className="failure-view-description sm-text">
+        Something went wrong. Please try again
+      </p>
+      <button
+        className="retry-button"
+        type="button"
+        onClick={getUserStoriesData}
+      >
+        Try Again
+      </button>
+    </div>
+  )
+
+  const renderUserStoryViews = () => {
+    const {apiStatus, userStories} = userStoriesResponse
+
+    switch (apiStatus) {
+      case apiStatusConstants.failure:
+        return renderUserStoryApiFailureView()
+
+      case apiStatusConstants.successfull:
+        return <StoriesSlick userStories={userStories} />
+
+      case apiStatusConstants.inProgress:
+        return renderLoadingView()
+
+      default:
+        return null
     }
   }
 
@@ -191,7 +240,7 @@ const Home = () => {
     <>
       <Header />
       <div className="home-container">
-        <StoriesSlick userStories={userStoriesResponse.userStories} />
+        {renderUserStoryViews()}
 
         {renderPostViews()}
       </div>
