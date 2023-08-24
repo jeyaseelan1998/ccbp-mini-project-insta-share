@@ -8,10 +8,11 @@ import {GiHamburgerMenu} from 'react-icons/gi'
 import './index.css'
 
 const Header = props => {
-  const {match} = props
+  const {match, getUserPostsData} = props
   const {path} = match
 
   const [showMenu, setShowMenu] = useState(false)
+  const [searchInput, setSearchInput] = useState('')
 
   const toggleShowMenu = () => setShowMenu(prevShowMenu => !prevShowMenu)
 
@@ -26,14 +27,30 @@ const Header = props => {
     history.replace('/login')
   }
 
+  const onClickSearch = () => {
+    const {history} = props
+    if (getUserPostsData && searchInput) getUserPostsData(searchInput)
+    setSearchInput('')
+    history.push('/')
+  }
+
+  const onChangeSearchInput = event => setSearchInput(event.target.value)
+
   const renderSearchbar = () => (
     <div className="searchbar-container">
       <input
         type="search"
         className="search-input"
         placeholder="Search Caption"
+        onChange={onChangeSearchInput}
+        value={searchInput}
       />
-      <button className="search-button" type="button" testid="searchIcon">
+      <button
+        className="search-button"
+        type="button"
+        testid="searchIcon"
+        onClick={onClickSearch}
+      >
         <FaSearch className="search-icon" />
       </button>
     </div>

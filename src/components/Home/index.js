@@ -22,6 +22,7 @@ const Home = () => {
   })
   const [postsResponse, setPostsResponse] = useState({
     posts: [],
+    searchPosts: [],
     apiStatus: apiStatusConstants.initial,
   })
 
@@ -80,14 +81,18 @@ const Home = () => {
       })),
     }))
 
-  const getUserPostsData = async () => {
+  const getUserPostsData = async searchInput => {
     setPostsResponse(prevState => ({
       ...prevState,
       apiStatus: apiStatusConstants.inProgress,
     }))
 
     const jwtToken = Cookies.get('jwt_token')
-    const userPostsApiUrl = 'https://apis.ccbp.in/insta-share/posts'
+    const userPostsApiUrl =
+      searchInput !== ''
+        ? 'https://apis.ccbp.in/insta-share/posts'
+        : `https://apis.ccbp.in/insta-share/posts?search=${searchInput}`
+
     const options = {
       method: 'GET',
       headers: {
@@ -100,11 +105,22 @@ const Home = () => {
 
     if (userPostsApiResponse.ok) {
       const updatedData = getUpdatedPostsList(data.posts)
-      setPostsResponse(prevState => ({
-        ...prevState,
-        posts: updatedData,
-        apiStatus: apiStatusConstants.successfull,
-      }))
+      setPostsResponse(prevState => {
+        console.log(searchInput)
+        if (searchInput) {
+          return {
+            ...prevState,
+            searchPosts: updatedData,
+            apiStatus: apiStatusConstants.successfull,
+          }
+        }
+
+        return {
+          ...prevState,
+          posts: updatedData,
+          apiStatus: apiStatusConstants.successfull,
+        }
+      })
     } else {
       setPostsResponse(prevState => ({
         ...prevState,
@@ -164,7 +180,25 @@ const Home = () => {
   )
 
   const renderPostItems = () => {
-    const {posts} = postsResponse
+    const {posts, searchPosts} = postsResponse
+
+    if (searchPosts.length !== 0) {
+      return (
+        <>
+          <h1 className="search-results-heading">Search Results</h1>
+          <ul className="search-results-container">
+            {searchPosts.map(eachPost => (
+              <PostItem
+                key={eachPost.postId}
+                postItemDetails={eachPost}
+                IncreaseLikeCount={IncreaseLikeCount}
+                DecreaseLikeCount={DecreaseLikeCount}
+              />
+            ))}
+          </ul>
+        </>
+      )
+    }
 
     return (
       <ul className="posts-list-container">
@@ -220,13 +254,14 @@ const Home = () => {
 
   const renderUserStoryViews = () => {
     const {apiStatus, userStories} = userStoriesResponse
+    const {searchPosts} = postsResponse
 
     switch (apiStatus) {
       case apiStatusConstants.failure:
         return renderUserStoryApiFailureView()
 
       case apiStatusConstants.successfull:
-        return <StoriesSlick userStories={userStories} />
+        return !searchPosts.length && <StoriesSlick userStories={userStories} />
 
       case apiStatusConstants.inProgress:
         return renderLoadingView()
@@ -238,7 +273,7 @@ const Home = () => {
 
   return (
     <>
-      <Header />
+      <Header getUserPostsData={getUserPostsData} />
       <div className="home-container">
         {renderUserStoryViews()}
 
