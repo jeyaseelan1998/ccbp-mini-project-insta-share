@@ -20,32 +20,45 @@ const Profile = props => {
 
   const profilePicAlt = myProfile ? 'my profile' : 'user profile'
   const storyAlt = myProfile ? 'my story' : 'user story'
-  const postAlt = myProfile ? 'my story' : 'user story'
+  const postAlt = myProfile ? 'my post' : 'user post'
 
   const renderPosts = () => (
     <ul className="posts-lists">
       {posts.map(post => (
+        <li key={post.id}>
+          <img className="profile-post-image" src={post.image} alt={postAlt} />
+        </li>
+      ))}
+      {/* Delete below list item */}
+      <li>
         <img
-          key={post.id}
           className="profile-post-image"
-          src={post.image}
+          src={posts[0].image}
           alt={postAlt}
         />
-      ))}
+      </li>
     </ul>
   )
 
   const renderStories = () => (
     <ul className="stories-lists">
       {stories.map(story => (
-        <div key={story.id} className="story-image-container">
+        <li key={story.id} className="story-image-container">
           <img
             className="profile-story-image"
             src={story.image}
             alt={storyAlt}
           />
-        </div>
+        </li>
       ))}
+      {/* Delete below list item */}
+      <li className="story-image-container">
+        <img
+          className="profile-story-image"
+          src={stories[0].image}
+          alt={storyAlt}
+        />
+      </li>
     </ul>
   )
 
@@ -54,9 +67,10 @@ const Profile = props => {
       <div className="icon-container">
         <BiCamera className="camera-icon" />
       </div>
-      <p className="empty-view-text">No Posts Yet</p>
+      <h1 className="empty-view-text">No Posts</h1>
     </div>
   )
+  // No Posts Yet
 
   return (
     <div className="profile-container">
@@ -82,13 +96,12 @@ const Profile = props => {
       </div>
 
       {renderStories()}
-      {/* {stories.length !== 0 && renderStories()} */}
 
       <hr className="separator" />
 
       <div className="posts-header">
         <BsGrid3X3 className="frame-icon" />
-        <p className="posts-heading">Posts</p>
+        <h1 className="posts-heading">Posts</h1>
       </div>
 
       {postsCount !== 0 ? renderPosts() : renderEmptyView()}

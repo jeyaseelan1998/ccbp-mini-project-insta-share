@@ -23,6 +23,7 @@ const PostItem = props => {
   } = postItemDetails
 
   const [isLiked, setIsLiked] = useState(false)
+
   const onClickLike = async () => {
     const jwtToken = Cookies.get('jwt_token')
 
@@ -45,12 +46,11 @@ const PostItem = props => {
     if (response.ok) {
       if (data.message === 'Post has been liked') {
         IncreaseLikeCount(postId)
-        setIsLiked(true)
       } else {
         DecreaseLikeCount(postId)
-        setIsLiked(false)
       }
     }
+    setIsLiked(prev => !prev)
   }
 
   return (

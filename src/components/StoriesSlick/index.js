@@ -32,9 +32,9 @@ const StoriesSlick = props => {
       <Slider {...settings} className="desktop-slick">
         {userStories.map(renderEachStory)}
       </Slider>
-      <Slider {...settings} slidesToShow={4} className="mobile-slick">
+      {/* <Slider {...settings} slidesToShow={4} className="mobile-slick">
         {userStories.map(renderEachStory)}
-      </Slider>
+      </Slider> */}
     </>
   )
 }
