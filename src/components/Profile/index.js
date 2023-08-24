@@ -6,7 +6,6 @@ import './index.css'
 const Profile = props => {
   const {profileDetails, myProfile} = props
   const {
-    id,
     followersCount,
     followingCount,
     postsCount,
@@ -88,7 +87,7 @@ const Profile = props => {
         <h1 className="posts-heading">Posts</h1>
       </div>
 
-      {postsCount !== 0 ? renderPosts() : renderEmptyView()}
+      {posts.length !== 0 ? renderPosts() : renderEmptyView()}
     </div>
   )
 }
