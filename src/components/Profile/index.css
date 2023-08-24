@@ -93,6 +93,7 @@
 }
 
 .posts-lists {
+  list-style-type: none;
   padding-left: 0;
   margin: 0;
   display: flex;
@@ -139,6 +140,7 @@
 }
 
 .stories-lists {
+  list-style-type: none;
   padding-left: 0;
   margin: 0 0 25px 0;
   display: flex;
