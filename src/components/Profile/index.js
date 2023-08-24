@@ -29,14 +29,6 @@ const Profile = props => {
           <img className="profile-post-image" src={post.image} alt={postAlt} />
         </li>
       ))}
-      {/* Delete below list item */}
-      <li>
-        <img
-          className="profile-post-image"
-          src={posts[0].image}
-          alt={postAlt}
-        />
-      </li>
     </ul>
   )
 
@@ -51,14 +43,6 @@ const Profile = props => {
           />
         </li>
       ))}
-      {/* Delete below list item */}
-      <li className="story-image-container">
-        <img
-          className="profile-story-image"
-          src={stories[0].image}
-          alt={storyAlt}
-        />
-      </li>
     </ul>
   )
 
