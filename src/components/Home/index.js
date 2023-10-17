@@ -81,7 +81,7 @@ const Home = () => {
       })),
     }))
 
-  const getUserPostsData = async searchInput => {
+  const getUserPostsData = async (searchInput = '') => {
     setPostsResponse(prevState => ({
       ...prevState,
       apiStatus: apiStatusConstants.inProgress,
@@ -89,7 +89,7 @@ const Home = () => {
 
     const jwtToken = Cookies.get('jwt_token')
     const userPostsApiUrl =
-      searchInput !== ''
+      searchInput === ''
         ? 'https://apis.ccbp.in/insta-share/posts'
         : `https://apis.ccbp.in/insta-share/posts?search=${searchInput}`
 
@@ -105,22 +105,12 @@ const Home = () => {
 
     if (userPostsApiResponse.ok) {
       const updatedData = getUpdatedPostsList(data.posts)
-      setPostsResponse(prevState => {
-        console.log(searchInput)
-        if (searchInput) {
-          return {
-            ...prevState,
-            searchPosts: updatedData,
-            apiStatus: apiStatusConstants.successfull,
-          }
-        }
-
-        return {
-          ...prevState,
-          posts: updatedData,
-          apiStatus: apiStatusConstants.successfull,
-        }
-      })
+      setPostsResponse(prevState => ({
+        ...prevState,
+        searchInput,
+        posts: updatedData,
+        apiStatus: apiStatusConstants.successfull,
+      }))
     } else {
       setPostsResponse(prevState => ({
         ...prevState,
@@ -180,37 +170,42 @@ const Home = () => {
   )
 
   const renderPostItems = () => {
-    const {posts, searchPosts} = postsResponse
+    const {posts, searchInput} = postsResponse
 
-    if (searchPosts.length !== 0) {
+    console.log(postsResponse, 'Post response')
+
+    if (posts.length === 0) {
       return (
-        <>
-          <h1 className="search-results-heading">Search Results</h1>
-          <ul className="search-results-container">
-            {searchPosts.map(eachPost => (
-              <PostItem
-                key={eachPost.postId}
-                postItemDetails={eachPost}
-                IncreaseLikeCount={IncreaseLikeCount}
-                DecreaseLikeCount={DecreaseLikeCount}
-              />
-            ))}
-          </ul>
-        </>
+        <div className="failure-view-container">
+          <img
+            className="failure-view-image"
+            src="https://res.cloudinary.com/dktwlx0dz/image/upload/v1697519400/ccbp-mini-project-insta-share/no-results-found.png"
+            alt="search not found"
+          />
+          <h1 className="no-results-heading">Search Not Found</h1>
+          <p className="no-results-description">
+            Try different keyword or search again
+          </p>
+        </div>
       )
     }
 
     return (
-      <ul className="posts-list-container">
-        {posts.map(eachPost => (
-          <PostItem
-            key={eachPost.postId}
-            postItemDetails={eachPost}
-            IncreaseLikeCount={IncreaseLikeCount}
-            DecreaseLikeCount={DecreaseLikeCount}
-          />
-        ))}
-      </ul>
+      <>
+        {searchInput && (
+          <h1 className="search-results-heading">Search Results</h1>
+        )}
+        <ul className="posts-list-container">
+          {posts.map(eachPost => (
+            <PostItem
+              key={eachPost.postId}
+              postItemDetails={eachPost}
+              IncreaseLikeCount={IncreaseLikeCount}
+              DecreaseLikeCount={DecreaseLikeCount}
+            />
+          ))}
+        </ul>
+      </>
     )
   }
 
@@ -275,7 +270,7 @@ const Home = () => {
     <>
       <Header getUserPostsData={getUserPostsData} />
       <div className="home-container">
-        {renderUserStoryViews()}
+        {!postsResponse.searchInput && renderUserStoryViews()}
 
         {renderPostViews()}
       </div>

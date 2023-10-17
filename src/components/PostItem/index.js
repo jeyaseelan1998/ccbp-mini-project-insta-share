@@ -64,7 +64,7 @@ const PostItem = props => {
           />
         </div>
         <Link to={`/users/${userId}`}>
-          <p className="post-item-username">{username}</p>
+          <span className="post-item-username">{username}</span>
         </Link>
       </div>
 
