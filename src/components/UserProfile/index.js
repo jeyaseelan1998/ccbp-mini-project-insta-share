@@ -73,6 +73,7 @@ const UserProfile = props => {
 
   useEffect(() => {
     getUserProfileData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const renderSuccessView = () => {

@@ -28,10 +28,7 @@ const Header = props => {
   }
 
   const onClickSearch = () => {
-    const {history} = props
     if (getUserPostsData && searchInput) getUserPostsData(searchInput)
-    setSearchInput('')
-    history.push('/')
   }
 
   const onChangeSearchInput = event => setSearchInput(event.target.value)
@@ -71,7 +68,7 @@ const Header = props => {
 
       <div className="hamburger-icon-desktop-menu-container">
         <div className="desktop-menu">
-          {renderSearchbar()}
+          {path === '/' && renderSearchbar()}
           <Link
             to="/"
             className={`nav-link ${path === '/' ? 'active-nav-link' : ''}`}

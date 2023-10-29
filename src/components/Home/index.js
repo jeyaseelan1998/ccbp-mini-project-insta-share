@@ -103,6 +103,8 @@ const Home = () => {
     const userPostsApiResponse = await fetch(userPostsApiUrl, options)
     const data = await userPostsApiResponse.json()
 
+    console.log(data, 'user / search posts response')
+
     if (userPostsApiResponse.ok) {
       const updatedData = getUpdatedPostsList(data.posts)
       setPostsResponse(prevState => ({
